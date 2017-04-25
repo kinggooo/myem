@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_DIR" value="log/${HOSTNAME}"/>
-    <property name="LOG_FILE_NAME" value="myem"/>
-    <property name="logFileNamePattern" value="${LOG_FILE_NAME}_%d{yyyy-MM-dd}_%i"/>
-    <property name="fileLayoutPattern"
+    <property name="log.baseDir" value="log/${HOSTNAME}"/><!-- 日志路径，这里是相对路径。 -->
+    <property name="log.moduleName" value="myem"/><!-- 模块名称， 影响日志配置名，日志文件名 -->
+    <property name="log.max.size" value="10MB"/> <!-- 日志文件大小 -->
+    <property name="log.max.histroy" value="21"/> <!-- 日志保留天数 -->
+    <property name="log.fileName.pattern" value="${log.moduleName}_%d{yyyy-MM-dd}_%i"/>
+
+    <property name="log.fileLayoutPattern"
               value="%-20(%d{yyyyMMdd_HH:mm:ss.SSS} [%thread]) [%X{requestId} %X{processId} %X{service.timing} ] %msg%n"/>
-    <property name="consoleLayoutPattern"
+    <property name="log.consoleLayoutPattern"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{36}][%L] %-5level - %msg%n"/>
+
     <!-- contextName could use in pattern, like '%contextName' -->
     <contextName>cache</contextName>
-    <appender name="ROLLING"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/${LOG_FILE_NAME}.log</file>
+    <!-- 日志文件输出 -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.baseDir}/${log.moduleName}.log</file>
+        <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/${logFileNamePattern}.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>5MB</maxFileSize>
+            <fileNamePattern>${log.baseDir}/${log.fileName.pattern}.log</fileNamePattern>
+            <!--<fileNamePattern>${log.baseDir}/${log.fileName.pattern}.log.zip</fileNamePattern>-->
+            <!-- 当天的日志大小 超过${log.max.size}时,压缩日志并保存 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log.max.size}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>21</maxHistory><!-- days -->
+            <maxHistory>${log.max.histroy}</maxHistory>
         </rollingPolicy>
         <layout>
-            <pattern>${fileLayoutPattern}</pattern>
+            <pattern>${log.fileLayoutPattern}</pattern>
         </layout>
     </appender>
-
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <!--控制台输出 name可以自定义-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+        <!--<Pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</Pattern>-->
+        <!--</encoder>-->
         <layout name="StandardFormat" class="ch.qos.logback.classic.PatternLayout">
-            <pattern>${consoleLayoutPattern}</pattern>
+            <pattern>${log.consoleLayoutPattern}</pattern>
         </layout>
     </appender>
-
+    <!-- root将级别为“DEBUG”及大于“DEBUG”的日志信息交给已经配置好的名为“Console”的appender处理，“Console”appender将信息打印到Console -->
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ROLLING"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
     </root>
-
-    <logger name="com.wangnz" level="INFO"/>
-
+    <!-- 为某个包下的所有类的指定Appender 这里也可以指定类名称例如：com.aa.bb.ClassName -->
+    <logger name="com.wangnz" additivity="false">
+        <level value="info" />
+        <appender-ref ref="console" />
+    </logger>
 </configuration>
