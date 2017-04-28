@@ -39,8 +39,9 @@ public class TestController {
 //                return true;
 //            }
 //        });
-        stringTemplate.opsForValue().set("city", "上海");
+        stringTemplate.opsForValue().set("city", "上海",10,TimeUnit.SECONDS);
         log.info(stringTemplate.opsForValue().get("city"));
+        log.info(stringTemplate.opsForValue().get("nokey"));
         return "ok";
     }
 
