@@ -85,18 +85,18 @@
 
 
     <!-- 开启事务，可以通过transcational注解控制 -->
-    <!--<bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>-->
-    <!--<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">-->
-        <!--<property name="connectionFactory" ref="jedisConnectionFactory"/>-->
-        <!--<property name="keySerializer" ref="stringSerializer"/>-->
-        <!--<property name="valueSerializer" ref="stringSerializer"/>-->
-        <!--<property name="enableTransactionSupport" value="true"/>-->
-    <!--</bean>-->
-
-    <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+    <bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="jedisConnectionFactory"/>
-        <!--<property name="keySerializer" ref="stringSerializer"/>-->
+        <property name="keySerializer" ref="stringSerializer"/>
         <!--<property name="valueSerializer" ref="stringSerializer"/>-->
         <property name="enableTransactionSupport" value="true"/>
     </bean>
+
+    <!--<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">-->
+        <!--<property name="connectionFactory" ref="jedisConnectionFactory"/>-->
+        <!--&lt;!&ndash;<property name="keySerializer" ref="stringSerializer"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="valueSerializer" ref="stringSerializer"/>&ndash;&gt;-->
+        <!--<property name="enableTransactionSupport" value="true"/>-->
+    <!--</bean>-->
 </beans>

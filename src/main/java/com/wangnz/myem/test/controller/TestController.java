@@ -2,6 +2,7 @@ package com.wangnz.myem.test.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,8 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 public class TestController {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Resource(name = "stringRedisTemplate")
-    private StringRedisTemplate stringTemplate;
+    @Resource(name = "redisTemplate")
+    private RedisTemplate template;
 
     @RequestMapping(value = "/test1")
     @ResponseBody
@@ -39,9 +42,18 @@ public class TestController {
 //                return true;
 //            }
 //        });
-        stringTemplate.opsForValue().set("city", "上海",10,TimeUnit.SECONDS);
-        log.info(stringTemplate.opsForValue().get("city"));
-        log.info(stringTemplate.opsForValue().get("nokey"));
+        HashMap map1 = new HashMap();
+        map1.put("aa", "上海");
+        HashMap map2 = new HashMap();
+        map2.put("bb", "北京");
+        ArrayList ls = new ArrayList();
+        ls.add(map1);
+        ls.add(map2);
+        ValueOperations val = template.opsForValue();
+        val.set("city", "上海",30,TimeUnit.SECONDS);
+        //ArrayList ls1 = (ArrayList) val.get("city");
+        log.info((String) val.get("city"));
+//        log.info((String) val.get("nokey"));
         return "ok";
     }
 
