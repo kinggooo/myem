@@ -99,4 +99,11 @@
         <!--&lt;!&ndash;<property name="valueSerializer" ref="stringSerializer"/>&ndash;&gt;-->
         <!--<property name="enableTransactionSupport" value="true"/>-->
     <!--</bean>-->
+
+    <!-- 使spring支持异步调用  重复设置了，不再使用。-->
+    <!--
+    <task:executor id="executor" pool-size="10-50"
+        queue-capacity="50" keep-alive="60" />
+    <task:annotation-driven executor="executor" />
+     -->
 </beans>

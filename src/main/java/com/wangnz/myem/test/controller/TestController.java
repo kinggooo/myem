@@ -42,19 +42,27 @@ public class TestController {
 //                return true;
 //            }
 //        });
-        HashMap map1 = new HashMap();
-        map1.put("aa", "上海");
-        HashMap map2 = new HashMap();
-        map2.put("bb", "北京");
-        ArrayList ls = new ArrayList();
-        ls.add(map1);
-        ls.add(map2);
-        ValueOperations val = template.opsForValue();
-        val.set("city", "上海",30,TimeUnit.SECONDS);
-        //ArrayList ls1 = (ArrayList) val.get("city");
-        log.info((String) val.get("city"));
+
+//        HashMap map1 = new HashMap();
+//        map1.put("aa", "上海");
+//        HashMap map2 = new HashMap();
+//        map2.put("bb", "北京");
+//        ArrayList ls = new ArrayList();
+//        ls.add(map1);
+//        ls.add(map2);
+//        ValueOperations val = template.opsForValue();
+//        val.set("city", "上海",30,TimeUnit.SECONDS);
+//        //ArrayList ls1 = (ArrayList) val.get("city");
+//        log.info((String) val.get("city"));
 //        log.info((String) val.get("nokey"));
-        return "ok";
+
+        boolean ret = template.opsForValue().setIfAbsent("testincre", "1");
+        if (ret) {
+            template.expire("testincre", 15, TimeUnit.SECONDS);
+        }
+
+        log.info(ret + "");
+        return String.valueOf(ret);
     }
 
     @RequestMapping(value = "/test2")
